@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"itspay/internal/config"
 
+	"github.com/exaring/otelpgx"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -24,6 +25,8 @@ func setupPgxPool(ctx context.Context, c *config.Config) (*pgxpool.Pool, error) 
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse postgres config: %w", err)
 	}
+
+	poolConfig.ConnConfig.Tracer = otelpgx.NewTracer()
 
 	pool, err := pgxpool.NewWithConfig(ctx, poolConfig)
 	if err != nil {

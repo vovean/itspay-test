@@ -42,5 +42,5 @@ func (s *Service) GetRate(ctx context.Context) (*entity.Rate, error) {
 		return nil, err
 	}
 
-	return rate.(*entity.Rate), nil
+	return rate.(*entity.Rate), nil //nolint:forcetypeassert
 }

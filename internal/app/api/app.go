@@ -17,6 +17,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/pkg/errors"
+	"github.com/uptrace/opentelemetry-go-extra/otelzap"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
@@ -29,14 +30,20 @@ type App struct {
 	pgxPool *pgxpool.Pool
 
 	// Technical things below
-	l *zap.Logger
+	l *otelzap.Logger
 }
 
 func NewApp(ctx context.Context) (*App, error) {
-	l, err := zap.NewDevelopment()
+	if err := initTracerProvider(ctx); err != nil {
+		return nil, fmt.Errorf("init tracer provider: %w", err)
+	}
+
+	zapL, err := zap.NewDevelopment()
 	if err != nil {
 		return nil, fmt.Errorf("can't initialize zap logger: %w", err)
 	}
+
+	l := otelzap.New(zapL)
 
 	c, err := loadConfig(ctx)
 	if err != nil {

@@ -8,16 +8,17 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/uptrace/opentelemetry-go-extra/otelzap"
 	"go.uber.org/zap"
 )
 
 type probesServer struct {
 	c       *config.TechServerConfig
 	pgxPool *pgxpool.Pool
-	l       *zap.Logger
+	l       *otelzap.Logger
 }
 
-func newProbesServer(c *config.TechServerConfig, pgxPool *pgxpool.Pool, l *zap.Logger) *probesServer {
+func newProbesServer(c *config.TechServerConfig, pgxPool *pgxpool.Pool, l *otelzap.Logger) *probesServer {
 	return &probesServer{c: c, pgxPool: pgxPool, l: l}
 }
 

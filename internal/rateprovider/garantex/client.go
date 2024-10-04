@@ -11,6 +11,7 @@ import (
 	"github.com/cockroachdb/apd/v3"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/pkg/errors"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 )
 
 type RateProvider struct {
@@ -22,7 +23,8 @@ const requestTimeout = time.Second // TODO setup from config
 func New() *RateProvider {
 	return &RateProvider{
 		client: http.Client{
-			Timeout: requestTimeout,
+			Transport: otelhttp.NewTransport(http.DefaultTransport),
+			Timeout:   requestTimeout,
 		},
 	}
 }

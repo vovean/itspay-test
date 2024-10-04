@@ -9,7 +9,7 @@ import (
 )
 
 // SingleFlightService wraps Rates service to avoid unnecessary calls with the same result
-// NOTE: this wrapper could have been in a separate package as with internal/rateprovider/metrics, both options possible
+// NOTE: this wrapper could have been in a separate package as with internal/rateprovider/metrics, both options possible.
 type SingleFlightService struct {
 	s service.Rates
 	g singleflight.Group
@@ -24,5 +24,5 @@ func (s *SingleFlightService) GetRate(ctx context.Context) (*entity.Rate, error)
 		return s.s.GetRate(ctx)
 	})
 
-	return rate.(*entity.Rate), err
+	return rate.(*entity.Rate), err //nolint:forcetypeassert
 }
