@@ -1,0 +1,4 @@
+go.sum -diff
+**/mock/*.go -diff
+**/*.pb.go -diff
+**/*.pb.gw.go -diff

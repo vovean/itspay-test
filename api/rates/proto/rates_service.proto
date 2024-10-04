@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "itspay/internal/api/rates/ratespb";
+
+package rates;
+
+message GetRateRequest {}
+
+message GetRateResponse {
+  // Use strings for numbers so we can handle any required precision
+  string ask = 1;
+  string bid = 2;
+  google.protobuf.Timestamp received_at = 3;
+}
+
+service RatesService {
+  rpc GetRate (GetRateRequest) returns (GetRateResponse) {}
+}

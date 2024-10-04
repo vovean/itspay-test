@@ -1,0 +1,11 @@
+postgres:
+  addr: localhost:5432
+  db: postgres
+  user: postgres
+  password: postgres
+
+grpc:
+  addr: :8080
+
+tech_server:
+  addr: :8081
