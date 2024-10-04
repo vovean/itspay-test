@@ -21,6 +21,6 @@ var (
 )
 
 func init() {
-	prometheus.Register(ClientMetrics)
-	prometheus.Register(ServerMetrics)
+	prometheus.MustRegister(ClientMetrics)
+	prometheus.MustRegister(ServerMetrics)
 }

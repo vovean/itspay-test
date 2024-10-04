@@ -7,6 +7,7 @@ import (
 	"itspay/internal/config"
 	postgresratesdb "itspay/internal/db/rates/postgres"
 	garantexrateprovider "itspay/internal/rateprovider/garantex"
+	metricsrateprovider "itspay/internal/rateprovider/metrics"
 	ratesservice "itspay/internal/service/rates"
 	"net"
 	"os"
@@ -49,7 +50,7 @@ func NewApp(ctx context.Context) (*App, error) {
 
 	rateDB := postgresratesdb.New(pgxPool)
 	garantexRateProvider := garantexrateprovider.New()
-	ratesService := ratesservice.New(garantexRateProvider, rateDB)
+	ratesService := ratesservice.New(metricsrateprovider.New(garantexRateProvider), rateDB)
 	ratesAPIServer := ratesapi.NewServer(ratesService)
 
 	return &App{

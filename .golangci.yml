@@ -95,6 +95,6 @@ issues:
       text: "unused-parameter: parameter '(.+)' seems to be unused, consider removing or renaming it as _"
       linters:
         - revive
-    - source: '// (NOTE|TODO):' # allow todos and notes to be long
+    - source: '// (NOTE|TODO|http|https):' # allow todos, notes and URLs to be long
       linters:
         - lll
