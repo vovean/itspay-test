@@ -50,7 +50,9 @@ func NewApp(ctx context.Context) (*App, error) {
 
 	rateDB := postgresratesdb.New(pgxPool)
 	garantexRateProvider := garantexrateprovider.New()
-	ratesService := ratesservice.New(metricsrateprovider.New(garantexRateProvider), rateDB)
+	ratesService := ratesservice.NewSingleflightService(
+		ratesservice.New(metricsrateprovider.New(garantexRateProvider), rateDB),
+	)
 	ratesAPIServer := ratesapi.NewServer(ratesService)
 
 	return &App{
