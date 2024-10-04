@@ -65,7 +65,7 @@ func (a *App) Run(ctx context.Context) error {
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, syscall.SIGINT, syscall.SIGTERM)
 
-	grpcServer := setupGRPCServer(a.ratesAPIServer)
+	grpcServer := setupGRPCServer(a.ratesAPIServer, a.l)
 	probesHTTPServer := newProbesServer(&a.c.TechServer, a.pgxPool, a.l).newHTTPServer()
 
 	g, ctx := errgroup.WithContext(ctx)
