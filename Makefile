@@ -1,7 +1,7 @@
 build:
 	go build -o main .
 
-test:
+test: infra-up
 	go test ./...
 
 infra-up: # including test db
