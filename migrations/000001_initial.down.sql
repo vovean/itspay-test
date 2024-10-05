@@ -1,1 +1,1 @@
-drop table if exists usdt_rates;
+drop table if exists rates;
