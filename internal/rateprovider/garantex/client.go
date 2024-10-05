@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"itspay/internal/entity"
+	"itspay/internal/rateprovider"
 	"net/http"
 	"time"
 
@@ -13,6 +14,8 @@ import (
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 )
+
+var _ rateprovider.RateProvider = &RateProvider{}
 
 type RateProvider struct {
 	client http.Client
