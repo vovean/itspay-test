@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"itspay/internal/config"
 
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
@@ -11,7 +12,7 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.26.0"
 )
 
-func initTracerProvider(ctx context.Context) error {
+func initTracerProvider(ctx context.Context, c *config.OTELConfig) error {
 	headers := map[string]string{
 		"content-type": "application/json",
 	}
@@ -19,7 +20,7 @@ func initTracerProvider(ctx context.Context) error {
 	exporter, err := otlptrace.New(
 		ctx,
 		otlptracehttp.NewClient(
-			otlptracehttp.WithEndpoint("localhost:4318"),
+			otlptracehttp.WithEndpoint(c.Addr),
 			otlptracehttp.WithHeaders(headers),
 			otlptracehttp.WithInsecure(),
 		),

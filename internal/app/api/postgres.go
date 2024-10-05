@@ -20,8 +20,8 @@ func getDBConnectionURL(config *config.PostgresConfig) string {
 	)
 }
 
-func setupPgxPool(ctx context.Context, c *config.Config) (*pgxpool.Pool, error) {
-	poolConfig, err := pgxpool.ParseConfig(getDBConnectionURL(&c.Postgres))
+func setupPgxPool(ctx context.Context, c *config.PostgresConfig) (*pgxpool.Pool, error) {
+	poolConfig, err := pgxpool.ParseConfig(getDBConnectionURL(c))
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse postgres config: %w", err)
 	}

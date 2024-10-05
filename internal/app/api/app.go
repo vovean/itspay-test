@@ -16,7 +16,6 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/pkg/errors"
 	"github.com/uptrace/opentelemetry-go-extra/otelzap"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
@@ -34,10 +33,6 @@ type App struct {
 }
 
 func NewApp(ctx context.Context) (*App, error) {
-	if err := initTracerProvider(ctx); err != nil {
-		return nil, fmt.Errorf("init tracer provider: %w", err)
-	}
-
 	zapL, err := zap.NewDevelopment()
 	if err != nil {
 		return nil, fmt.Errorf("can't initialize zap logger: %w", err)
@@ -50,7 +45,11 @@ func NewApp(ctx context.Context) (*App, error) {
 		return nil, fmt.Errorf("unable to load config: %w", err)
 	}
 
-	pgxPool, err := setupPgxPool(ctx, c)
+	if err := initTracerProvider(ctx, &c.OTEL); err != nil {
+		return nil, fmt.Errorf("init tracer provider: %w", err)
+	}
+
+	pgxPool, err := setupPgxPool(ctx, &c.Postgres)
 	if err != nil {
 		return nil, fmt.Errorf("unable to setup pgx pool: %w", err)
 	}
@@ -119,9 +118,7 @@ func (a *App) Run(ctx context.Context) error {
 
 		a.pgxPool.Close()
 
-		if err := a.l.Sync(); err != nil && !errors.Is(err, syscall.ENOTTY) { // https://github.com/uber-go/zap/issues/991#issuecomment-962098428
-			a.l.Warn("failed to sync logger", zap.Error(err))
-		}
+		_ = a.l.Sync()
 
 		return nil
 	})

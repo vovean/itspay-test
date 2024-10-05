@@ -7,5 +7,8 @@ postgres:
 grpc:
   addr: :8080
 
+otel:
+  addr: localhost:4318
+
 tech_server:
   addr: :8081

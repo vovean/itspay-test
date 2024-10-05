@@ -9,6 +9,12 @@ services:
       POSTGRES__DB: postgres
       POSTGRES__USER: postgres
       POSTGRES__PASSWORD: postgres
+      OTEL__ADDR: jaeger:4318
+    ports:
+      - '8080:8080'
+      - '8081:8081'
+    depends_on:
+      - postgres
 
   postgres:
     image: postgres:15.1-alpine
