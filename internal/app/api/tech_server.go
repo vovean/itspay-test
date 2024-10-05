@@ -12,17 +12,17 @@ import (
 	"go.uber.org/zap"
 )
 
-type probesServer struct {
+type techServer struct {
 	c       *config.TechServerConfig
 	pgxPool *pgxpool.Pool
 	l       *otelzap.Logger
 }
 
-func newProbesServer(c *config.TechServerConfig, pgxPool *pgxpool.Pool, l *otelzap.Logger) *probesServer {
-	return &probesServer{c: c, pgxPool: pgxPool, l: l}
+func newTechServer(c *config.TechServerConfig, pgxPool *pgxpool.Pool, l *otelzap.Logger) *techServer {
+	return &techServer{c: c, pgxPool: pgxPool, l: l}
 }
 
-func (s *probesServer) newMux() http.Handler {
+func (s *techServer) newMux() http.Handler {
 	router := mux.NewRouter()
 
 	router.Methods(http.MethodGet).Path("/metrics").Handler(promhttp.Handler())
@@ -60,7 +60,7 @@ func (s *probesServer) newMux() http.Handler {
 	return router
 }
 
-func (s *probesServer) newHTTPServer() *http.Server {
+func (s *techServer) newHTTPServer() *http.Server {
 	return &http.Server{
 		Addr:    s.c.Addr,
 		Handler: s.newMux(),

@@ -60,7 +60,7 @@ func NewApp(ctx context.Context) (*App, error) {
 	ratesService := ratesservice.NewSingleflightService(
 		ratesservice.New(metricsrateprovider.New(garantexRateProvider), rateDB),
 	)
-	ratesAPIServer := ratesapi.NewServer(ratesService)
+	ratesAPIServer := ratesapi.NewServer(ratesService, l)
 
 	return &App{
 		c:              c,
@@ -75,7 +75,7 @@ func (a *App) Run(ctx context.Context) error {
 	signal.Notify(stop, syscall.SIGINT, syscall.SIGTERM)
 
 	grpcServer := setupGRPCServer(a.ratesAPIServer, a.l)
-	probesHTTPServer := newProbesServer(&a.c.TechServer, a.pgxPool, a.l).newHTTPServer()
+	techHTTPServer := newTechServer(&a.c.TechServer, a.pgxPool, a.l).newHTTPServer()
 
 	g, ctx := errgroup.WithContext(ctx)
 
@@ -91,9 +91,9 @@ func (a *App) Run(ctx context.Context) error {
 	})
 
 	g.Go(func() error {
-		a.l.Info("probes server start listening", zap.String("addr", a.c.TechServer.Addr))
+		a.l.Info("tech server start listening", zap.String("addr", a.c.TechServer.Addr))
 
-		return probesHTTPServer.ListenAndServe()
+		return techHTTPServer.ListenAndServe()
 	})
 
 	g.Go(func() error {
@@ -113,7 +113,7 @@ func (a *App) Run(ctx context.Context) error {
 
 		grpcServer.GracefulStop()
 
-		if err := probesHTTPServer.Shutdown(shutdownCtx); err != nil { //nolint:contextcheck
+		if err := techHTTPServer.Shutdown(shutdownCtx); err != nil { //nolint:contextcheck
 			a.l.Warn("failed to properly shutdown http server", zap.Error(err))
 		}
 
